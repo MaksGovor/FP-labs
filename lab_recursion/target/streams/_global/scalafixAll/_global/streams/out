@@ -1,0 +1,12 @@
+[error] (scalafixAll) scalafix.sbt.InvalidArgument: The semanticdb-scalac compiler plugin is required to run semantic rules like RewriteDeprecatedNames.
+[error] To fix this problem for this sbt shell session, run `scalafixEnable` and try again.
+[error] To fix this problem permanently for your build, add the following settings to build.sbt:
+[error] 
+[error] inThisBuild(
+[error]   List(
+[error]     scalaVersion := "2.13.6",
+[error]     semanticdbEnabled := true,
+[error]     semanticdbVersion := scalafixSemanticdb.revision
+[error]   )
+[error] )
+[error] 

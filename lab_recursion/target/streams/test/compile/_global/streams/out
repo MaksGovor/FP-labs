@@ -1,0 +1,21 @@
+[debug] Acquiring lock on file C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\project\target\.sbt-compilation-infos\lab_recursion-test\.sbt-idea-lock ...
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\BalanceSuite.scala:7:22: object junit is not a member of package org.scalatest
+[error] import org.scalatest.junit.JUnitRunner
+[error]                      ^
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\BalanceSuite.scala:9:18: not found: type JUnitRunner
+[error] @RunWith(classOf[JUnitRunner])
+[error]                  ^
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\CountChangeSuite.scala:7:22: object junit is not a member of package org.scalatest
+[error] import org.scalatest.junit.JUnitRunner
+[error]                      ^
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\CountChangeSuite.scala:9:18: not found: type JUnitRunner
+[error] @RunWith(classOf[JUnitRunner])
+[error]                  ^
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\PascalSuite.scala:7:22: object junit is not a member of package org.scalatest
+[error] import org.scalatest.junit.JUnitRunner
+[error]                      ^
+[error] C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\src\test\scala\recfun\PascalSuite.scala:9:18: not found: type JUnitRunner
+[error] @RunWith(classOf[JUnitRunner])
+[error]                  ^
+[error] 6 errors found
+[debug] Releasing lock on file C:\Users\omazhara\work\Scala\KPI\LABS\lab1\lab_recursion\project\target\.sbt-compilation-infos\lab_recursion-test\.sbt-idea-lock.
