@@ -19,4 +19,15 @@ class PascalSuite extends AnyFunSuite {
       assert(pascal(1,3) === 3)
   }
 
+  test("pascal: col=5,row=1") {
+    assertThrows[IllegalArgumentException] {
+      pascal(5, 1)
+    }
+  }
+
+  test("pascal: col=-1,row=1") {
+    assertThrows[IllegalArgumentException] {
+      pascal(-1, 1)
+    }
+  }
 }
