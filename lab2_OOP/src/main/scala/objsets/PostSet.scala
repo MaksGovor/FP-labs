@@ -123,12 +123,15 @@ class Empty extends PostSet {
   /**
    * This is a helper method for `filter` that propagetes the accumulated posts.
    */
-  override def filterAcc(p: Post => Boolean, acc: PostSet): PostSet = ???
+  override def filterAcc(p: Post => Boolean, acc: PostSet): PostSet = acc
 }
 
 class NonEmpty(elem: Post, left: PostSet, right: PostSet) extends PostSet {
 
-  def filterAcc(p: Post => Boolean, acc: PostSet): PostSet = ???
+  def filterAcc(p: Post => Boolean, acc: PostSet): PostSet = {
+    if(p(elem)) left.filterAcc(p, right.filterAcc(p, acc.incl(elem)))
+    else left.filterAcc(p, right.filterAcc(p, acc))
+  }
   /**
    * The following methods are already implemented
    */
