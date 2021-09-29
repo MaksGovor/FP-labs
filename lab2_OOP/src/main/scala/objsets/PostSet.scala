@@ -40,7 +40,7 @@ abstract class PostSet extends postsetInterface {
    * Question: Can we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def filter(p: Post => Boolean): PostSet = ???
+  def filter(p: Post => Boolean): PostSet = filterAcc(p, new Empty)
 
   /**
    * This is a helper method for `filter` that propagetes the accumulated posts.
@@ -53,7 +53,7 @@ abstract class PostSet extends postsetInterface {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: PostSet): PostSet = ???
+  def union(that: PostSet): PostSet = filterAcc(_ => true, that)
 
   /**
    * Returns the post from this set which has the greatest likes count.
