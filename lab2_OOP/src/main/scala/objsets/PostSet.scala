@@ -64,7 +64,7 @@ abstract class PostSet extends postsetInterface {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostLiked: Post = ???
+  def mostLiked: Post
 
   /**
    * Returns a list containing all posts of this set, sorted by likes count
@@ -75,7 +75,7 @@ abstract class PostSet extends postsetInterface {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByLikes: PostList = ???
+  def descendingByLikes: PostList
 
   /**
    * The following methods are already implemented
@@ -124,6 +124,10 @@ class Empty extends PostSet {
    * This is a helper method for `filter` that propagetes the accumulated posts.
    */
   override def filterAcc(p: Post => Boolean, acc: PostSet): PostSet = acc
+
+  def mostLiked: Post = throw new java.util.NoSuchElementException("It is impossible to define it on an empty set")
+
+  def descendingByLikes: PostList = Nil
 }
 
 class NonEmpty(elem: Post, left: PostSet, right: PostSet) extends PostSet {
@@ -164,6 +168,20 @@ class NonEmpty(elem: Post, left: PostSet, right: PostSet) extends PostSet {
     left.foreach(f)
     right.foreach(f)
   }
+
+  def mostLiked: Post = {
+    def maxLike(p1: Post, p2: Post): Post = if (p1.likes > p2.likes) p1 else p2
+    left match {
+      case _: Empty if right.isInstanceOf[Empty] => elem
+      case _: Empty => maxLike(elem, right.mostLiked)
+      case _ if right.isInstanceOf[Empty] => maxLike(elem, left.mostLiked)
+      case _ => maxLike(right.mostLiked, maxLike(elem, left.mostLiked))
+    }
+  }
+
+  def descendingByLikes: PostList = {
+    new Cons(mostLiked, remove(mostLiked).descendingByLikes)
+  }
 }
 
 trait PostList {
@@ -172,7 +190,6 @@ trait PostList {
   def tail: PostList
 
   def isEmpty: Boolean
-
 
   def foreach(f: Post => Unit): Unit = {
     if (!isEmpty) {
