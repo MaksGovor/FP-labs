@@ -10,6 +10,8 @@ class PostSetSuite extends munit.FunSuite {
   val set4c: PostSet = set3.incl(c)
   val set4d: PostSet = set3.incl(d)
   val set5: PostSet = set4c.incl(d)
+  val set6: PostSet = set5.union(new Empty())
+  val set7: PostSet = new Empty().union(set5)
 
   def asSet(posts: PostSet): Set[Post] = {
     var res = Set[Post]()
@@ -47,6 +49,24 @@ class PostSetSuite extends munit.FunSuite {
     val trends = set5.descendingByLikes
     assert(!trends.isEmpty)
     assert(trends.head.user == "a" || trends.head.user == "b")
+  }
+
+  test("mostLiked: set1") {
+    intercept[java.util.NoSuchElementException] {
+      set1.mostLiked
+    }
+  }
+
+  test("mostLiked: set6 = set5.union(new Empty())") {
+    val user: String = set6.mostLiked.user
+    assert(user == "a" || user == "b")
+    assertEquals(set6.mostLiked.likes, 20)
+  }
+
+  test("mostLiked: set7 = new Empty().union(set5)") {
+    val user: String = set7.mostLiked.user
+    assert(user == "a" || user == "b")
+    assertEquals(set7.mostLiked.likes, 20)
   }
 
   import scala.concurrent.duration._
