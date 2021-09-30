@@ -1,5 +1,6 @@
 package objsets
 
+import PostReader.allposts
 
 /**
  * A class to represent posts.
@@ -215,14 +216,14 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleposts: PostSet = ???
-  lazy val appleposts: PostSet = ???
+  lazy val googleposts: PostSet = allposts.filter(p => google.exists(p.text.contains))
+  lazy val appleposts: PostSet = allposts.filter(p => apple.exists(p.text.contains))
 
   /**
    * A list of all posts mentioning a keyword from either apple or google,
    * sorted by the number of likes.
    */
-  lazy val trending: PostList = ???
+  lazy val trending: PostList = googleposts.union(appleposts).descendingByLikes
 }
 
 object Main extends App {
