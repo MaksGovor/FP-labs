@@ -172,10 +172,11 @@ class NonEmpty(elem: Post, left: PostSet, right: PostSet) extends PostSet {
 
   def mostLiked: Post = {
     def maxLike(p1: Post, p2: Post): Post = if (p1.likes > p2.likes) p1 else p2
-    if (left.isInstanceOf[Empty] && right.isInstanceOf[Empty]) elem
-    else if (right.isInstanceOf[Empty]) maxLike(left.mostLiked, elem)
-    else if (left.isInstanceOf[Empty]) maxLike(right.mostLiked, elem)
-    else maxLike(left.mostLiked, maxLike(right.mostLiked,elem))
+
+    maxLike(
+      if (left.isInstanceOf[Empty]) elem else left.mostLiked,
+      maxLike(if (right.isInstanceOf[Empty]) elem else right.mostLiked, elem)
+    )
   }
 
   def descendingByLikes: PostList = {
