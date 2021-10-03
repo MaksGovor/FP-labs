@@ -1,6 +1,7 @@
 package objsets
 
 import PostReader.allposts
+import com.sun.org.apache.xpath.internal.compiler.Keywords
 
 /**
  * A class to represent posts.
@@ -215,8 +216,12 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleposts: PostSet = allposts.filter(p => google.exists(p.text.contains))
-  lazy val appleposts: PostSet = allposts.filter(p => apple.exists(p.text.contains))
+  def getThematicPosts (posts: PostSet, keywords: List[String]): PostSet = {
+    posts.filter(p => keywords.exists(p.text.contains))
+  }
+
+  lazy val googleposts: PostSet = getThematicPosts(allposts, google)
+  lazy val appleposts: PostSet = getThematicPosts(allposts, apple)
 
   /**
    * A list of all posts mentioning a keyword from either apple or google,

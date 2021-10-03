@@ -69,6 +69,17 @@ class PostSetSuite extends munit.FunSuite {
     assertEquals(set7.mostLiked.likes, 20)
   }
 
+  test("descendingByLikes: set1 = new Empty()") {
+    val likedList: PostList = set1.descendingByLikes
+    assertEquals(likedList.isEmpty, true)
+    intercept[java.util.NoSuchElementException] { likedList.head }
+    intercept[java.util.NoSuchElementException] { likedList.tail }
+  }
+
+  test("descendingByLikes: set5") {
+    assertEquals(set1.descendingByLikes.isEmpty, false)
+  }
+
   import scala.concurrent.duration._
   override val munitTimeout: FiniteDuration = 10.seconds
 
