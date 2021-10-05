@@ -1,5 +1,7 @@
 package objsets
 
+import PostReader.allposts
+
 class PostSetSuite extends munit.FunSuite {
 
   val set1 = new Empty()
@@ -58,15 +60,27 @@ class PostSetSuite extends munit.FunSuite {
   }
 
   test("mostLiked: set6 = set5.union(new Empty())") {
-    val user: String = set6.mostLiked.user
-    assert(user == "a" || user == "b")
-    assertEquals(set6.mostLiked.likes, 20)
+    val post: Post = set6.mostLiked
+    assert(post.user == "a" || post.user == "b")
+    assertEquals(post.likes, 20)
   }
 
   test("mostLiked: set7 = new Empty().union(set5)") {
-    val user: String = set7.mostLiked.user
-    assert(user == "a" || user == "b")
-    assertEquals(set7.mostLiked.likes, 20)
+    val post: Post = set7.mostLiked
+    assert(post.user == "a" || post.user == "b")
+    assertEquals(post.likes, 20)
+  }
+
+  test("mostLiked: with empty set1.union(allposts)") {
+    val post: Post = set1.union(allposts).mostLiked
+    assert(post.user == "mashable")
+    assertEquals(post.likes, 345)
+  }
+
+  test("mostLiked: with empty allposts.union(set1)") {
+    val post: Post = allposts.union(set1).mostLiked
+    assert(post.user == "mashable")
+    assertEquals(post.likes, 345)
   }
 
   test("descendingByLikes: set1 = new Empty()") {
@@ -77,7 +91,7 @@ class PostSetSuite extends munit.FunSuite {
   }
 
   test("descendingByLikes: set5") {
-    assertEquals(set1.descendingByLikes.isEmpty, false)
+    assertEquals(set5.descendingByLikes.isEmpty, false)
   }
 
   import scala.concurrent.duration._
