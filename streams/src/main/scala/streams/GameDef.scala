@@ -79,9 +79,8 @@ trait GameDef {
    * This function returns the block at the start position of
    * the game.
    */
-  def startBlock: Block = ???
-
-
+  def startBlock: Block = Block(startPos, startPos)
+  
   /**
    * A block is represented by the position of the two cubes that
    * it consists of. We make sure that `b1` is lexicographically
