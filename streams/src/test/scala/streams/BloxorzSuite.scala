@@ -69,6 +69,33 @@ class BloxorzSuite extends munit.FunSuite {
     }
   }
 
+  test("neighborsWithHistory for level 1") {
+    new Level1 {
+      val actual = neighborsWithHistory(Block(Pos(1,1),Pos(1,1)), List(Left,Up)).toSet
+      val expected: Set[(Block, List[Move])] = Set(
+        (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      )
+
+      assertEquals(actual, expected, "the neighbors are in the wrong place")
+    }
+  }
+
+  test("newNeighborsOnly for level 1") {
+    new Level1 {
+      val actual = newNeighborsOnly(
+        Set(
+          (Block(Pos(1,2),Pos(1,3)), List(Right,Left,Up)),
+          (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+        ).to(LazyList),
+        Set(Block(Pos(1,2),Pos(1,3)), Block(Pos(1,1),Pos(1,1)))
+      )
+      val expected: LazyList[(Block, List[Move])] = Set(
+        (Block(Pos(2,1),Pos(3,1)), List(Down,Left,Up))
+      ).to(LazyList)
+    }
+  }
+
   import scala.concurrent.duration._
   override val munitTimeout: FiniteDuration = 10.seconds
 }
