@@ -80,7 +80,7 @@ trait GameDef {
    * the game.
    */
   def startBlock: Block = Block(startPos, startPos)
-  
+
   /**
    * A block is represented by the position of the two cubes that
    * it consists of. We make sure that `b1` is lexicographically
@@ -105,22 +105,22 @@ trait GameDef {
 
 
     /** The block obtained by moving left */
-    def left = if (isStanding)             deltaCol(-2, -1)
+    def left = if (isStanding)      deltaCol(-2, -1)
                else if (b1.row == b2.row)  deltaCol(-1, -2)
                else                        deltaCol(-1, -1)
 
     /** The block obtained by moving right */
-    def right = if (isStanding)            deltaCol(1, 2)
+    def right = if (isStanding)     deltaCol(1, 2)
                 else if (b1.row == b2.row) deltaCol(2, 1)
                 else                       deltaCol(1, 1)
 
     /** The block obtained by moving up */
-    def up = if (isStanding)               deltaRow(-2, -1)
+    def up = if (isStanding)        deltaRow(-2, -1)
              else if (b1.row == b2.row)    deltaRow(-1, -1)
              else                          deltaRow(-1, -2)
 
     /** The block obtained by moving down */
-    def down = if (isStanding)             deltaRow(1, 2)
+    def down = if (isStanding)      deltaRow(1, 2)
                else if (b1.row == b2.row)  deltaRow(1, 1)
                else                        deltaRow(2, 1)
 
@@ -140,7 +140,7 @@ trait GameDef {
     /**
      * Returns `true` if the block is standing.
      */
-    def isStanding: Boolean = ???
+    def isStanding: Boolean = b1 == b2
 
     /**
      * Returns `true` if the block is entirely inside the terrain.
