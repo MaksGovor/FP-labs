@@ -9,8 +9,8 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   lazy val genHeap: Gen[H] = for {
     x <- arbitrary[A]
-    h <- oneOf(const(empty), genHeap)
-  } yield insert(x, h)
+    heap <- oneOf(const(empty), genHeap)
+  } yield insert(x, heap)
 
   implicit lazy val arbHeap: Arbitrary[H] = Arbitrary(genHeap)
 
@@ -19,4 +19,9 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     findMin(insert(m, h)) == m
   }
 
+  property("minimum element of two heaps") = forAll { (x: Int, y: Int) =>
+    val heap = insert(x, insert(y, empty))
+    val actual = findMin(heap)
+    if (x > y) actual == y else actual == x
+  }
 }

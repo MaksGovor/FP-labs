@@ -10,6 +10,7 @@ import org.scalacheck.Prop._
 import org.scalacheck.Test.{check, Result, Failed, PropException}
 
 object QuickCheckBinomialHeap extends QuickCheckHeap with BinomialHeap
+//object QuickCheckBogus1BinomialHeap extends QuickCheckHeap with Bogus1BinomialHeap
 
 class QuickCheckSuite {
   def checkBogus(p: Properties): Unit = {
