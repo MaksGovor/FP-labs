@@ -37,6 +37,11 @@ class QuickCheckSuite {
       check(asProp(new QuickCheckHeap with quickcheck.test.BinomialHeap))(identity).passed
     )
 
+  @Test def `Individual task`: Unit =
+    Assert.assertTrue(
+      check(asProp(QuickCheckIndividualTask))(identity).passed
+    )
+
   @Test def `Bogus (1) binomial heap does not satisfy properties. (10pts)`: Unit =
     checkBogus(new QuickCheckHeap with quickcheck.test.Bogus1BinomialHeap)
 
