@@ -5,11 +5,14 @@ import Arbitrary._
 import Gen._
 import Prop._
 
+import scala.annotation.tailrec
+
 trait IndividualTask {
   lazy val posGen: Gen[Int] = choose(2, 100)
-  lazy val uncertaintyGen: Gen[Int] = oneOf(0, 1)
+  lazy val uncertaintyGen: Gen[Int] = oneOf(const(0), const(1))
 
-  def iterateFact(x: Int, result: BigInt = 1): BigInt =
+  @tailrec
+  final def iterateFact(x: Int, result: BigInt = 1): BigInt =
     if (x == 0) result
     else iterateFact(x - 1, result * x)
 
@@ -31,9 +34,7 @@ object QuickCheckIndividualTask extends Properties("IndividualTask") with Indivi
     }
   }
 
-  property("in the area of uncertainty returns None") = forAll(uncertaintyGen) { (x: Int) =>
-    liftedCE(x).isEmpty
-  }
+  property("in the area of uncertainty returns None") = forAll(uncertaintyGen)((x: Int) => liftedCE(x).isEmpty)
 
   property("factorial should be returned for all positive numbers > 1") = forAll(posGen) { (x: Int) =>
     liftedCE(x).contains(iterateFact(x))

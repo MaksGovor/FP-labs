@@ -5,6 +5,8 @@ import Arbitrary._
 import Gen._
 import Prop._
 
+import scala.annotation.tailrec
+
 abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   lazy val genHeap: Gen[H] = for {
@@ -14,7 +16,8 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   implicit lazy val arbHeap: Arbitrary[H] = Arbitrary(genHeap)
 
-  def heapEquals(h1: H, h2: H): Boolean = (h1, h2) match {
+  @tailrec
+  final def heapEquals(h1: H, h2: H): Boolean = (h1, h2) match {
     case (Nil, Nil) => true
     case _ if (isEmpty(h1) || isEmpty(h2)) =>  false
     case (hs1, hs2) => {
@@ -22,12 +25,23 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     }
   }
 
-  def checkElem(h: H, el: Int): Boolean = h match {
+  @tailrec
+  final def checkElem(h: H, el: Int): Boolean = h match {
     case Nil => false
     case hs1 => findMin(hs1) == el || checkElem(deleteMin(hs1), el)
   }
 
+  def len(h: H): Int = {
+    @tailrec
+    def lenAcc(h: H, acc: Int): Int = h match {
+      case Nil => acc
+      case hs => lenAcc(deleteMin(hs), acc + 1)
+    }
+    lenAcc(h, 0)
+  }
+
   def getSorted(h: H): H = {
+    @tailrec
     def getSortedAcc(h: H, acc: H): H = h match {
       case Nil => acc
       case hs => getSortedAcc(deleteMin(hs), insert(findMin(hs), acc))
@@ -90,12 +104,12 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     isEmpty(emptyHeap)
   }
 
-  property("adding an element larger than the minimum to the pile") = forAll{ (h: H, x: Int) => {
+  property("adding an element larger than the minimum to the pile") = forAll{ (h: H, x: Int) =>
     !isEmpty(h) && x < findMin(h) ==> {
       val heap = insert(x, h)
       findMin(heap) == x
     }
-  }}
+  }
 
   property("merging two heaps and comparing the same without the minimum with insertion") = forAll { (h1: H, h2: H) =>
     !isEmpty(h1) ==> {
@@ -110,10 +124,26 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     heapEquals(meld(h1, h2), meld(h2, h1))
   }
 
+  property("merging any heap with an empty heap gives it the equivalent heap") = forAll { (h: H) =>
+    heapEquals(h, meld(h, empty))
+  }
+
   property("inserted element is in the heap") = forAll { (h: H, x: Int) =>
     !isEmpty(h) && x < findMin(h) ==> {
       val heap = insert(x, h)
       checkElem(heap, x)
     }
+  }
+
+  property("after removing the minimum, the length of the pile decreases") = forAll { (h: H) =>
+    !isEmpty(h) ==> {
+      val heap = deleteMin(h)
+      len(heap) == len(h) - 1
+    }
+  }
+
+  property("length of the meld heap is equal to the sum of the lengths") = forAll { (h1: H, h2: H) =>
+    val heap = meld(h1, h2)
+    len(heap) == len(h1) + len(h2)
   }
 }
