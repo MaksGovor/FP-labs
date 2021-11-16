@@ -1,6 +1,79 @@
 [debug] [zinc] IncrementalCompile -----------
 [debug] IncrementalCompile.incrementalCompile
-[debug] previous = Stamps for: 36 products, 2 sources, 2 libraries
+[debug] previous = Stamps for: 39 products, 2 sources, 2 libraries
 [debug] current source = Set(${BASE}/src/main/scala/codecs/codecs.scala, ${BASE}/src/main/scala/codecs/Util.scala)
-[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(),API Changes: Set())
-[debug] No changes
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(${BASE}/target/scala-2.13/classes/codecs/Main$.class),Set(),API Changes: Set())
+[debug] 
+[debug] Initial source changes:
+[debug] 	removed: Set()
+[debug] 	added: Set()
+[debug] 	modified: Set()
+[debug] Invalidated products: Set(${BASE}/target/scala-2.13/classes/codecs/Main$.class)
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set()
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set(${BASE}/src/main/scala/codecs/codecs.scala)
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set()
+[debug] All initially invalidated sources:Set(${BASE}/src/main/scala/codecs/codecs.scala)
+[debug] Initial set of included nodes: 
+[debug] compilation cycle 1
+[info] compiling 1 Scala source to D:\IntelijJ\codecs\target\scala-2.13\classes ...
+[debug] Getting org.scala-sbt:compiler-bridge_2.13:1.5.3:compile for Scala 2.13.1
+[debug] [zinc] Running cached compiler 761e285e for Scala compiler version 2.13.1
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-deprecation
+[debug] 	-bootclasspath
+[debug] 	C:\Users\Максим\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.1\scala-library-2.13.1.jar
+[debug] 	-classpath
+[debug] 	D:\IntelijJ\codecs\target\scala-2.13\classes;C:\Users\Максим\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\typelevel\jawn-parser_2.13\1.0.0\jawn-parser_2.13-1.0.0.jar
+[debug] Invalidating (transitively) by inheritance from codecs.Json...
+[debug] Initial set of included nodes: codecs.Json
+[debug] Including codecs.Json.Arr by codecs.Json
+[debug] Including codecs.Json.Str by codecs.Json
+[debug] Including codecs.Json.Bool by codecs.Json
+[debug] Including codecs.Json.Null by codecs.Json
+[debug] Including codecs.Json.Obj by codecs.Json
+[debug] Including codecs.Json.Num by codecs.Json
+[debug] Invalidated by transitive inheritance dependency: Set(codecs.Json.Arr, codecs.Json.Str, codecs.Json.Bool, codecs.Json.Null, codecs.Json.Obj, codecs.Json, codecs.Json.Num)
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] None of the modified names appears in source file of codecs.Util. This dependency is not being considered for invalidation.
+[debug] Change NamesChange(codecs.Json,ModifiedNames(changes = UsedName(finalize,[Default]))) invalidates 7 classes due to The codecs.Json has the following regular definitions changed:
+[debug] 	UsedName(finalize,[Default]).
+[debug]   > by transitive inheritance: Set(codecs.Json.Arr, codecs.Json.Str, codecs.Json.Bool, codecs.Json.Null, codecs.Json.Obj, codecs.Json, codecs.Json.Num)
+[debug]   > 
+[debug]   > 
+[debug]         
+[debug] Invalidating (transitively) by inheritance from codecs.Main...
+[debug] Initial set of included nodes: codecs.Main
+[debug] Invalidated by transitive inheritance dependency: Set(codecs.Main)
+[debug] Change NamesChange(codecs.Main,ModifiedNames(changes = UsedName(finalize,[Default]))) invalidates 1 classes due to The codecs.Main has the following regular definitions changed:
+[debug] 	UsedName(finalize,[Default]).
+[debug]   > by transitive inheritance: Set(codecs.Main)
+[debug]   > 
+[debug]   > 
+[debug]         
+[debug] New invalidations:
+[debug] 	codecs.Json.Arr
+[debug] 	codecs.Json.Str
+[debug] 	codecs.Json.Bool
+[debug] 	codecs.Json.Null
+[debug] 	codecs.Json.Obj
+[debug] 	codecs.Json.Num
+[debug] Initial set of included nodes: codecs.Json.Arr, codecs.Json.Str, codecs.Json.Bool, codecs.Json.Null, codecs.Json.Obj, codecs.Json.Num
+[debug] Including codecs.Util by codecs.Json.Arr
+[debug] Including codecs.Main by codecs.Util
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] 	codecs.Main
+[debug] Final step, transitive dependencies:
+[debug] 	Set(codecs.Json.Arr, codecs.Json.Str, codecs.Json.Bool, codecs.Json.Null, codecs.Json.Obj, codecs.Main, codecs.Json.Num)
+[debug] No classes were invalidated.
+[debug] Scala compilation took 2.5849186 s
+[info] done compiling

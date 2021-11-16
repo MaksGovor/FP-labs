@@ -208,7 +208,7 @@ trait DecoderInstances {
   /** A decoder for `Boolean` values */
   // TODO Define an implicit value of type `Decoder[Boolean]`
   implicit val boolDecoder: Decoder[Boolean] =
-    Decoder.fromPartialFunction { case Json.Bool(bool) => bool.booleanValue }
+    Decoder.fromPartialFunction { case Json.Bool(bool) => bool }
 
   /**
     * A decoder for JSON arrays. It decodes each item of the array
@@ -216,7 +216,15 @@ trait DecoderInstances {
     * if all the JSON array items are successfully decoded.
     */
   // TODO
-  implicit def listDecoder[A](implicit decoder: Decoder[A]): Decoder[List[A]] = ???
+  implicit def listDecoder[A](implicit decoder: Decoder[A]): Decoder[List[A]] =
+    Decoder.fromFunction({
+      case Json.Arr(arr) => {
+        val decoded = arr.map(decoder.decode)
+        if (decoded.forall(_.isDefined)) Some(decoded.map { case Some(a) => a} )
+        else None
+      }
+      case _ => None
+    })
 
   /**
     * A decoder for JSON objects. It decodes the value of a field of
@@ -269,11 +277,16 @@ object Main {
     println(renderJson("foo"))
 
     val maybeJsonString = parseJson(""" "foo" """)
+    val maybeJsonNumber = parseJson(""" 42 """)
     val maybeJsonObj    = parseJson(""" { "name": "Alice", "age": 42 } """)
     val maybeJsonObj2   = parseJson(""" { "name": "Alice", "age": "42" } """)
     // Uncomment the following lines as you progress in the assignment
-//     println(maybeJsonString.flatMap(_.decodeAs[Int]))
-//     println(maybeJsonString.flatMap(_.decodeAs[String]))
+    println(maybeJsonString.flatMap(_.decodeAs[Int]))
+    println(maybeJsonString.flatMap(_.decodeAs[String]))
+    println(maybeJsonNumber.flatMap(_.decodeAs[Int]))
+    println(maybeJsonNumber.flatMap(_.decodeAs[String]))
+    println(maybeJsonNumber.flatMap(_.decodeAs[List[String]]))
+
 //     println(maybeJsonObj.flatMap(_.decodeAs[Person]))
 //     println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
 //     println(renderJson(Person("Bob", 66)))
