@@ -217,21 +217,25 @@ trait DecoderInstances {
     */
   // TODO
   implicit def listDecoder[A](implicit decoder: Decoder[A]): Decoder[List[A]] =
-    Decoder.fromFunction({
+    Decoder.fromFunction {
       case Json.Arr(arr) => {
         val decoded = arr.map(decoder.decode)
-        if (decoded.forall(_.isDefined)) Some(decoded.map { case Some(a) => a} )
+        if (decoded.forall(_.isDefined)) Some(decoded.map { case Some(a) => a })
         else None
       }
       case _ => None
-    })
+    }
 
   /**
     * A decoder for JSON objects. It decodes the value of a field of
     * the supplied `name` using the given `decoder`.
     */
     // TODO
-  def field[A](name: String)(implicit decoder: Decoder[A]): Decoder[A] = ???
+  def field[A](name: String)(implicit decoder: Decoder[A]): Decoder[A] =
+    Decoder.fromFunction {
+      case Json.Obj(obj) if obj.contains(name) => decoder.decode(obj(name))
+      case _ => None
+    }
 }
 
 case class Person(name: String, age: Int)
@@ -248,7 +252,10 @@ trait PersonCodecs {
 
   /** The corresponding decoder for `Person` */
   // TODO Define he decoder for `Person`
-  implicit val personDecoder: Decoder[Person] = ???
+  implicit val personDecoder: Decoder[Person] =
+    Decoder.field[String]("name")
+      .zip(Decoder.field[Int]("age"))
+      .transform[Person]({ case (name, age) => Person(name, age) })
 }
 
 case class Contacts(people: List[Person])
@@ -263,7 +270,39 @@ trait ContactsCodecs {
   // array of values of type `Person` (reuse the `Person` codecs)
 
   /** The encoder for `Contacts` */
+  implicit val contactsEncoder: Encoder[Contacts] =
+    ObjectEncoder.field[List[Person]]("people")
+      .transform[Contacts](c => c.people)
 
+  /** The decoder for `Contacts` */
+  implicit val contactsDecoder: Decoder[Contacts] =
+    Decoder.field[List[Person]]("people")
+      .transform[Contacts](Contacts(_))
+}
+
+case class Book(authors: List[String], name: String)
+
+object Book extends BookCodecs
+
+trait BookCodecs {
+
+  // JSON representation of `Book` type value should be as follows.
+  // a JSON object with two fields: "authors", containing
+  // an array of strings containing authors' names and
+  // "name" - a string containing the title of the book (reuse codecs `List[Str] and Str`)
+  // For example: { "authors": ["Bird Richard", "Wadler Phil"], "name": "Introduction to Functional Programming" }
+
+  /** The encoder for `Book` */
+  implicit val bookEncoder: Encoder[Book] =
+    ObjectEncoder.field[List[String]]("authors")
+      .zip(ObjectEncoder.field[String]("name"))
+      .transform[Book](b => (b.authors, b.name))
+
+  /** The decoder for `Book` */
+  implicit val bookDecoder: Decoder[Book] =
+    Decoder.field[List[String]]("authors")
+      .zip(Decoder.field[String]("name"))
+      .transform[Book]({ case (authors, name) => Book(authors, name)})
 }
 
 // In case you want to try your code, here is a simple `Main`
@@ -278,19 +317,34 @@ object Main {
 
     val maybeJsonString = parseJson(""" "foo" """)
     val maybeJsonNumber = parseJson(""" 42 """)
+    val maybeJsonArray  = parseJson(""" [1, 2, 3, 4, 5, 6] """)
     val maybeJsonObj    = parseJson(""" { "name": "Alice", "age": 42 } """)
     val maybeJsonObj2   = parseJson(""" { "name": "Alice", "age": "42" } """)
     // Uncomment the following lines as you progress in the assignment
     println(maybeJsonString.flatMap(_.decodeAs[Int]))
     println(maybeJsonString.flatMap(_.decodeAs[String]))
+
     println(maybeJsonNumber.flatMap(_.decodeAs[Int]))
-    println(maybeJsonNumber.flatMap(_.decodeAs[String]))
-    println(maybeJsonNumber.flatMap(_.decodeAs[List[String]]))
+    println(maybeJsonArray.flatMap(_.decodeAs[List[Int]]))
 
-//     println(maybeJsonObj.flatMap(_.decodeAs[Person]))
-//     println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
-//     println(renderJson(Person("Bob", 66)))
+    println(maybeJsonObj.flatMap(_.decodeAs[Person]))
+    println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
+    println(renderJson(Person("Bob", 66)))
+
+    val contacts = parseJson(
+      """ { "people": [{ "name": "Alice", "age": 42 },
+        |{ "name": "John", "age": 26 }] } """.stripMargin)
+    println(contacts.flatMap(_.decodeAs[Contacts]))
+    println(renderJson(Contacts(List(Person("Bob", 66), Person("Jane", 19)))))
+
+    val book = parseJson(
+      """ { "authors": ["Bird Richard", "Wadler Phil"],
+        |"name": "Introduction to Functional Programming" } """.stripMargin)
+
+    println(book.flatMap(_.decodeAs[Book]))
+    println(renderJson(Book(
+      List("Abelson Harald", "Sussman Gerald J."),
+      "Structure and Interpretation of Computer Programs")
+    ))
   }
-
-
 }
