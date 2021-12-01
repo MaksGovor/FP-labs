@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="sbt: io.github.classgraph:classgraph:4.8.78:jar">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/null/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.78/classgraph-4.8.78.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.github.classgraph/classgraph/jars/classgraph-4.8.78.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/null/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.78/classgraph-4.8.78-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/null/Coursier/cache/v1/https/repo1.maven.org/maven2/io/github/classgraph/classgraph/4.8.78/classgraph-4.8.78-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.ivy2/cache/io.github.classgraph/classgraph/srcs/classgraph-4.8.78-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
