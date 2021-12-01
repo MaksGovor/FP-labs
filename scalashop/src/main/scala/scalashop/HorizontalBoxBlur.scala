@@ -40,8 +40,8 @@ object HorizontalBoxBlur extends HorizontalBoxBlurInterface {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method (Done)
-    for (y <- from to end) {
-      for (x <- 0 to src.width) {
+    for (y <- from until end) {
+      for (x <- 0 until src.width) {
         dst(x, y) = boxBlurKernel(src, x, y, radius)
       }
     }

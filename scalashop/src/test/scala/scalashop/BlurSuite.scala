@@ -7,5 +7,7 @@ import org.junit.Assert.assertEquals
 
 class BlurSuite {
 
+  
+
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
