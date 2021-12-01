@@ -32,8 +32,6 @@ package object scalashop extends BoxBlurKernelInterface {
     else v
   }
 
-
-
   /** Image is a two-dimensional matrix of pixel values. */
   class Img(val width: Int, val height: Int, private val data: Array[RGBA]) {
     def this(w: Int, h: Int) = this(w, h, new Array(w * h))
