@@ -43,11 +43,9 @@ object VerticalBoxBlur extends VerticalBoxBlurInterface {
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
     // TODO implement this method using the `boxBlurKernel` method (Done)
-    for (x <- from until end) {
-      for (y <- 0 until src.height) {
-        dst(x, y) = boxBlurKernel(src, x, y, radius)
-        // dst.update(x, y, boxBlurKernel(src, x, y, radius))
-      }
+    for (x <- from until end; y <- 0 until src.height) {
+      dst(x, y) = boxBlurKernel(src, x, y, radius)
+      // dst.update(x, y, boxBlurKernel(src, x, y, radius))
     }
   }
 
