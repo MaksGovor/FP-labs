@@ -29,6 +29,11 @@ object IndividualTask {
 //    val maxWaitTime: FiniteDuration = Duration(5, TimeUnit.SECONDS)
 //    val resFuture = Await.result(collectCountInterval(rangeT), maxWaitTime)
 //    resFuture.toArray.foreach(println)
+
+    // Using Recursion & parallel
+
+    val resRec = countIntervalRecPar(rangeT, 4)
+    resRec.foreach(println)
   }
 
 
@@ -66,6 +71,25 @@ object IndividualTask {
       result.add(countExpression(x))
     }
     result
+  }
+
+  def countIntervalRecPar(range: Range, maxDepth: Int): Array[Option[BigInt]] = {
+    val res = new Array[Option[BigInt]](range.length)
+
+    def countParallel (from: Int, to: Int, depth: Int): Unit = {
+      if (depth == maxDepth || from == to) {
+        countInterval(range, from, to, res)
+      } else {
+        val mid = (from + to) / 2
+        scalashop.parallel(
+          countParallel(mid, to, depth + 1),
+          countParallel(from, mid - 1, depth + 1)
+        )
+      }
+    }
+
+    if (maxDepth % 2 == 0) countParallel(0, res.length - 1, 0)
+    res
   }
 
   def collectCountInterval(range: Range): Future[IndexedSeq[BigInt]] = {
