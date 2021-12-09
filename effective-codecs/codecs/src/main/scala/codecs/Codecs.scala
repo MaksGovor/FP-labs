@@ -81,11 +81,14 @@ trait EncoderInstances:
     Encoder.fromFunction(n => Json.Num(BigDecimal(n)))
 
   /** An encoder for `String` values */
+  // TODO Implement the `Encoder[String]` given instance (Done)
   given stringEncoder: Encoder[String] =
-    ??? // TODO Implement the `Encoder[String]` given instance
+    Encoder.fromFunction(s => Json.Str(s))
 
   /** An encoder for `Boolean` values */
-  // TODO Define a given instance of type `Encoder[Boolean]`
+  // TODO Define a given instance of type `Encoder[Boolean]` (Done)
+  given boolEncoder: Encoder[Boolean] =
+    Encoder.fromFunction(b => Json.Bool(b))
 
   /**
     * Encodes a list of values of type `A` into a JSON array containing
@@ -189,12 +192,18 @@ trait DecoderInstances:
 
   /** A decoder for `Int` values. Hint: use the `isValidInt` method of `BigDecimal`. */
   // TODO Define a given instance of type `Decoder[Int]`
+  given intDecoder: Decoder[Int] =
+    Decoder.fromPartialFunction { case Json.Num(num) if (num.isValidInt) => num.toInt }
 
   /** A decoder for `String` values */
   // TODO Define a given instance of type `Decoder[String]`
+  given stringDecoder: Decoder[String] =
+    Decoder.fromPartialFunction { case Json.Str(str) => str }
 
   /** A decoder for `Boolean` values */
   // TODO Define a given instance of type `Decoder[Boolean]`
+  given boolDecoder: Decoder[Boolean] =
+    Decoder.fromPartialFunction { case Json.Bool(bool) => bool }
 
   /**
     * A decoder for JSON arrays. It decodes each item of the array
