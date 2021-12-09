@@ -191,17 +191,17 @@ trait DecoderInstances:
     Decoder.fromPartialFunction { case Json.Null => () }
 
   /** A decoder for `Int` values. Hint: use the `isValidInt` method of `BigDecimal`. */
-  // TODO Define a given instance of type `Decoder[Int]`
+  // TODO Define a given instance of type `Decoder[Int]` (Done)
   given intDecoder: Decoder[Int] =
     Decoder.fromPartialFunction { case Json.Num(num) if (num.isValidInt) => num.toInt }
 
   /** A decoder for `String` values */
-  // TODO Define a given instance of type `Decoder[String]`
+  // TODO Define a given instance of type `Decoder[String]` (Done)
   given stringDecoder: Decoder[String] =
     Decoder.fromPartialFunction { case Json.Str(str) => str }
 
   /** A decoder for `Boolean` values */
-  // TODO Define a given instance of type `Decoder[Boolean]`
+  // TODO Define a given instance of type `Decoder[Boolean]` (Done)
   given boolDecoder: Decoder[Boolean] =
     Decoder.fromPartialFunction { case Json.Bool(bool) => bool }
 
@@ -210,38 +210,51 @@ trait DecoderInstances:
     * using the given `decoder`. The resulting decoder succeeds only
     * if all the JSON array items are successfully decoded.
     */
+  // TODO (Done)
   given listDecoder[A](using decoder: Decoder[A]): Decoder[List[A]] =
     // Decode the provided `item` with the provided `decoder`. If this succeeds,
     // return the decoded item **prepended** to the `previouslyDecodedItems`.
     def decodeAndPrepend(item: Json, previouslyDecodedItems: List[A]): Option[List[A]] =
-      ???
+      decoder.decode(item) match
+        case Some(decodedValue) => Some(decodedValue :: previouslyDecodedItems)
+        case None => None
+
     // Decode the provided `item` only if the previous items were successfully decoded.
     // In case `maybePreviouslyDecodedItems` is `None` (which means that at least
     // one of the previous items failed to be decoded), return `None`.
     // Otherwise, decode the provided `item` and prepend it to the previously
     // decoded items (use the method `decodeAndPrepend`).
     def processItem(item: Json, maybePreviouslyDecodedItems: Option[List[A]]): Option[List[A]] =
-      ???
+      maybePreviouslyDecodedItems match
+        case Some(arr) => decodeAndPrepend(item, arr)
+        case None => None
+
     // Decodes all the provided JSON items. Fails if any item fails to
     // be decoded.
     // Iterates over the items, and tries to decode each item if the
     // previous items could be successfully decoded.
     def decodeAllItems(items: List[Json]): Option[List[A]] =
       items.foldRight(Some(List.empty[A]))(processItem)
+
     // Finally, write a decoder that checks whether the JSON value to decode
     // is a JSON array.
     //   - if it is the case, call `decodeAllItems` on the array items,
     //   - otherwise, return a failure (`None`)
     Decoder.fromFunction {
-      ???
+      case Json.Arr(arr) => decodeAllItems(arr)
+      case _ => None
     }
 
   /**
     * A decoder for JSON objects. It decodes the value of a field of
     * the supplied `name` using the given `decoder`.
     */
+  // TODO (Done)
   def field[A](name: String)(using decoder: Decoder[A]): Decoder[A] =
-    ???
+    Decoder.fromFunction {
+      case Json.Obj(obj) if obj.contains(name) => decoder.decode(obj(name))
+      case _ => None
+    }
 
 end DecoderInstances
 
@@ -263,8 +276,11 @@ trait PersonCodecs:
     * Hint: combine the decoders by using their methods `zip` and
     *       `transform`.
     */
+  // TODO (Done)
   given Decoder[Person] =
-    ???
+    Decoder.field[String]("name")
+      .zip(Decoder.field[Int]("age"))
+      .transform[Person]({ case (name, age) => Person(name, age) })
 
 end PersonCodecs
 
@@ -274,14 +290,45 @@ object Contacts extends ContactsCodecs
 
 trait ContactsCodecs:
 
-  // TODO Define the encoder and the decoder for `Contacts`
+  // TODO Define the encoder and the decoder for `Contacts` (Done)
   // The JSON representation of a value of type `Contacts` should be
   // a JSON object with a single field named “people” containing an
   // array of values of type `Person` (reuse the `Person` codecs)
-  given Encoder[Contacts] = ???
-  // ... then implement the decoder
+  given Encoder[Contacts] =
+    ObjectEncoder.field[List[Person]]("people")
+      .transform[Contacts](c => c.people)
+
+  given Decoder[Contacts] =
+    Decoder.field[List[Person]]("people")
+      .transform[Contacts](Contacts(_))
 
 end ContactsCodecs
+
+case class Book(authors: List[String], name: String)
+
+object Book extends BookCodecs
+
+trait BookCodecs:
+  // TODO (Done)
+  // JSON representation of `Book` type value should be as follows.
+  // a JSON object with two fields: "authors", containing
+  // an array of strings containing authors' names and
+  // "name" - a string containing the title of the book (reuse codecs `List[Str] and Str`)
+  // For example: { "authors": ["Bird Richard", "Wadler Phil"], "name": "Introduction to Functional Programming" }
+
+  /** The encoder for `Book` */
+  given Encoder[Book] =
+    ObjectEncoder.field[List[String]]("authors")
+      .zip(ObjectEncoder.field[String]("name"))
+      .transform[Book](b => (b.authors, b.name))
+
+  /** The decoder for `Book` */
+  given Decoder[Book] =
+    Decoder.field[List[String]]("authors")
+      .zip(Decoder.field[String]("name"))
+      .transform[Book]({ case (authors, name) => Book(authors, name)})
+
+end BookCodecs
 
 // In case you want to try your code, here is a simple `Main`
 // that can be used as a starting point. Otherwise, you can use
@@ -293,11 +340,32 @@ import Util.*
   println(renderJson("foo"))
 
   val maybeJsonString = parseJson(""" "foo" """)
+  val maybeJsonNumber = parseJson(""" 42 """)
+  val maybeJsonArray  = parseJson(""" [1, 2, 3, 4, 5, 6] """)
   val maybeJsonObj    = parseJson(""" { "name": "Alice", "age": 42 } """)
   val maybeJsonObj2   = parseJson(""" { "name": "Alice", "age": "42" } """)
   // Uncomment the following lines as you progress in the assignment
-  // println(maybeJsonString.flatMap(_.decodeAs[Int]))
-  // println(maybeJsonString.flatMap(_.decodeAs[String]))
-  // println(maybeJsonObj.flatMap(_.decodeAs[Person]))
-  // println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
-  // println(renderJson(Person("Bob", 66)))
+  println(maybeJsonString.flatMap(_.decodeAs[Int]))
+  println(maybeJsonString.flatMap(_.decodeAs[String]))
+
+  println(maybeJsonNumber.flatMap(_.decodeAs[Int]))
+  println(maybeJsonArray.flatMap(_.decodeAs[List[Int]]))
+
+  println(maybeJsonObj.flatMap(_.decodeAs[Person]))
+  println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
+  println(renderJson(Person("Bob", 66)))
+
+  val contacts = parseAndDecode[Contacts](
+    """ { "people": [{ "name": "Alice", "age": 42 },
+      |{ "name": "John", "age": 26 }] } """.stripMargin)
+  println(contacts)
+  println(renderJson(Contacts(List(Person("Bob", 66), Person("Jane", 19)))))
+
+  val book = parseAndDecode[Book](
+    """ { "authors": ["Bird Richard", "Wadler Phil"],
+      |"name": "Introduction to Functional Programming" } """.stripMargin)
+  println(book)
+  println(renderJson(Book(
+    List("Abelson Harald", "Sussman Gerald J."),
+    "Structure and Interpretation of Computer Programs")
+  ))

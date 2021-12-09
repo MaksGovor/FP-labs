@@ -10,7 +10,8 @@ class CodecsSuite
     with EncoderInstances with TestEncoders
     with DecoderInstances with TestDecoders
     with PersonCodecs
-    with ContactsCodecs:
+    with ContactsCodecs
+    with BookCodecs:
 
   def checkProperty(prop: Prop): Unit =
     val result = scalacheck.Test.check(scalacheck.Test.Parameters.default, prop)
@@ -96,6 +97,14 @@ class CodecsSuite
     ))
     val encoder = summon[Encoder[Contacts]]
     assertEquals(encoder.encode(contacts), json)
+  }
+
+  test("a 'Book' value should be encoded as a JSON object (1pt)") {
+    val book = Book(List("Abelson Harald", "Sussman Gerald J."), "Structure and Interpretation of Computer Programs")
+    val json = Json.Obj(Map("authors" -> Json.Arr(List(Json.Str("Abelson Harald"), Json.Str("Sussman Gerald J."))),
+      "name" -> Json.Str("Structure and Interpretation of Computer Programs")))
+    val encoder = summon[Encoder[Book]]
+    assert(encoder.encode(book) == json)
   }
 
   test("it is possible to encode and decode contacts (4pts)") {
