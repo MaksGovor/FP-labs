@@ -5,33 +5,33 @@ package codecs
   *
   * For example, the `42` integer JSON value can be modeled as `Json.Num(42)`
   */
-sealed trait Json:
+enum Json:
   /**
-   * Try to decode this JSON value into a value of type `A` by using
-   * the given decoder.
-   *
-   * Note that you have to explicitly fix `A` type parameter when you call the method:
-   *
-   * {{{
-   *   someJsonValue.decodeAs[User] // OK
-   *   someJsonValue.decodeAs       // Wrong!
-   * }}}
-   */
+    * Try to decode this JSON value into a value of type `A` by using
+    * the given decoder.
+    *
+    * Note that you have to explicitly fix `A` type parameter when you call the method:
+    *
+    * {{{
+    *   someJsonValue.decodeAs[User] // OK
+    *   someJsonValue.decodeAs       // Wrong!
+    * }}}
+    */
   def decodeAs[A](using decoder: Decoder[A]): Option[A] = decoder.decode(this)
 
-object Json:
   /** The JSON `null` value */
-  case object Null extends Json
+  case Null
   /** JSON boolean values */
-  case class Bool(value: Boolean) extends Json
+  case Bool(value: Boolean)
   /** JSON numeric values */
-  case class Num(value: BigDecimal) extends Json
+  case Num(value: BigDecimal)
   /** JSON string values */
-  case class Str(value: String) extends Json
+  case Str(value: String)
   /** JSON objects */
-  case class Obj(fields: Map[String, Json]) extends Json
+  case Obj(fields: Map[String, Json])
   /** JSON arrays */
-  case class Arr(items: List[Json]) extends Json
+  case Arr(items: List[Json])
+end Json
 
 /**
   * A type class that turns a value of type `A` into its JSON representation.
