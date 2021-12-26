@@ -1,2 +1,3 @@
 # FP-labs
-Functional programming labs
+
+### Scala functional programming labs
